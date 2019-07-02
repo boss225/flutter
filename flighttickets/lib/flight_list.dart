@@ -11,7 +11,9 @@ class FlightListingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Result',),
+        title: Text(
+          'Search Result',
+        ),
         elevation: 0,
         centerTitle: true,
         leading: InkWell(
@@ -23,14 +25,134 @@ class FlightListingScreen extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          FlightListingPard(),
+          FlightListTopPart(),
+          FlightListBottomPart(),
         ],
       ),
     );
   }
 }
 
-class FlightListingPard extends StatelessWidget {
+class FlightListBottomPart extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(left: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            //2.25.30
+            'Best Deals for Next 6 Months',
+            style: dropDownMenuItemStyle,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          FlightCard()
+        ],
+      ),
+    );
+  }
+}
+
+class FlightCard extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(right: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+            border: Border.all(color: flightBorderColor),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Text(
+                      '${formatCurrency.format(4159)}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      '(${formatCurrency.format(9999)})',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        decoration: TextDecoration.lineThrough,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                Wrap(
+                  spacing: 8,
+                  children: <Widget>[
+                    FlightDetailChip(Icons.calendar_today, 'June 2019'),
+                    FlightDetailChip(Icons.flight_takeoff, 'Jet Airways'),
+                    FlightDetailChip(Icons.star, '4.4'),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: 10,
+          right: 0,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text(
+              '55%',
+              style: TextStyle(
+                  color: appTheme.primaryColor,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold),
+            ),
+            decoration: BoxDecoration(
+                color: discountBackgroundColor,
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class FlightDetailChip extends StatelessWidget {
+  final IconData iconData;
+  final String label;
+
+  FlightDetailChip(this.iconData, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return RawChip(
+      label: Text(label),
+      labelStyle: TextStyle(color: Colors.black, fontSize: 14),
+      backgroundColor: chipBackgroundColor,
+      avatar: Icon(
+        iconData,
+        size: 14,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+    );
+  }
+}
+
+class FlightListTopPart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -48,24 +170,49 @@ class FlightListingPard extends StatelessWidget {
         ),
         Column(
           children: <Widget>[
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
               margin: EdgeInsets.symmetric(horizontal: 16),
               elevation: 10,
               child: Container(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 22),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Text('Boston (BOS)', style: TextStyle(fontSize: 16),),
-                        Divider(color: Colors.grey, height: 20,),
-                        Text('New York City (JFK)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                      ],
+                    Expanded(
+                      flex: 5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Boston (BOS)',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          Divider(
+                            color: Colors.grey,
+                            height: 20,
+                          ),
+                          Text(
+                            'New York City (JFK)',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
-                    Icon(Icons.import_export, color: Colors.black),
+                    Spacer(),
+                    Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.import_export,
+                          color: Colors.black,
+                          size: 32,
+                        )),
                   ],
                 ),
               ),
