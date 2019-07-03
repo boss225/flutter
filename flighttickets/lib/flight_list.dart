@@ -6,6 +6,19 @@ final Color discountBackgroundColor = Color(0xFFFFE08D);
 final Color flightBorderColor = Color(0xFFE6E6E6);
 final Color chipBackgroundColor = Color(0xFFF6F6F6);
 
+class InheritedFlightListing extends InheritedWidget {
+  final String toLocation, fromLocation;
+
+  InheritedFlightListing({this.fromLocation, this.toLocation, Widget child}): super(child: child);
+
+  @override
+  bool updateShouldNotify(InheritedWidget oldWidget) => true;
+
+  static InheritedFlightListing of(BuildContext context) => 
+    context.inheritFromWidgetOfExactType(InheritedFlightListing);
+    //2:52:03
+}
+
 class FlightListingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,11 +36,15 @@ class FlightListingScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          FlightListTopPart(),
-          FlightListBottomPart(),
-        ],
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: <Widget>[
+            FlightListTopPart(),
+            SizedBox(height: 20,),
+            FlightListBottomPart(),
+          ],
+        ),
       ),
     );
   }
@@ -41,15 +58,29 @@ class FlightListBottomPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            //2.25.30
-            'Best Deals for Next 6 Months',
-            style: dropDownMenuItemStyle,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Best Deals for Next 6 Months',
+              style: dropDownMenuItemStyle,
+            ),
           ),
           SizedBox(
             height: 10,
           ),
-          FlightCard()
+          ListView(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            children: <Widget>[
+              FlightCard(),
+              FlightCard(),
+              FlightCard(),
+              FlightCard(),
+              FlightCard(),
+              FlightCard(),
+            ],
+          ),
         ],
       ),
     );
@@ -59,72 +90,75 @@ class FlightListBottomPart extends StatelessWidget {
 class FlightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          margin: const EdgeInsets.only(right: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(
-              Radius.circular(10),
-            ),
-            border: Border.all(color: flightBorderColor),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Text(
-                      '${formatCurrency.format(4159)}',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                    SizedBox(
-                      width: 4,
-                    ),
-                    Text(
-                      '(${formatCurrency.format(9999)})',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        decoration: TextDecoration.lineThrough,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-                Wrap(
-                  spacing: 8,
-                  children: <Widget>[
-                    FlightDetailChip(Icons.calendar_today, 'June 2019'),
-                    FlightDetailChip(Icons.flight_takeoff, 'Jet Airways'),
-                    FlightDetailChip(Icons.star, '4.4'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-          top: 10,
-          right: 0,
-          child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Text(
-              '55%',
-              style: TextStyle(
-                  color: appTheme.primaryColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold),
-            ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Stack(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(right: 16),
             decoration: BoxDecoration(
-                color: discountBackgroundColor,
-                borderRadius: BorderRadius.all(Radius.circular(10))),
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              border: Border.all(color: flightBorderColor),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        '${formatCurrency.format(4159)}',
+                        style:
+                            TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      ),
+                      SizedBox(
+                        width: 4,
+                      ),
+                      Text(
+                        '(${formatCurrency.format(9999)})',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          decoration: TextDecoration.lineThrough,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Wrap(
+                    spacing: 8,
+                    children: <Widget>[
+                      FlightDetailChip(Icons.calendar_today, 'June 2019'),
+                      FlightDetailChip(Icons.flight_takeoff, 'Jet Airways'),
+                      FlightDetailChip(Icons.star, '4.4'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+          Positioned(
+            top: 10,
+            right: 0,
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Text(
+                '55%',
+                style: TextStyle(
+                    color: appTheme.primaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold),
+              ),
+              decoration: BoxDecoration(
+                  color: discountBackgroundColor,
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -190,7 +224,7 @@ class FlightListTopPart extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            'Boston (BOS)',
+                            '${InheritedFlightListing.of(context).fromLocation}',
                             style: TextStyle(fontSize: 16),
                           ),
                           Divider(
@@ -198,7 +232,7 @@ class FlightListTopPart extends StatelessWidget {
                             height: 20,
                           ),
                           Text(
-                            'New York City (JFK)',
+                            '${InheritedFlightListing.of(context).toLocation}',
                             style: TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.bold),
                           ),

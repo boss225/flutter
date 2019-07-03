@@ -43,6 +43,8 @@ const TextStyle dropDownLabelStyle =
 const TextStyle dropDownMenuItemStyle =
     TextStyle(color: Colors.black, fontSize: 16.0);
 
+final _searchFieldController = TextEditingController(text: locations[1]);
+
 class HomeScreenTopPart extends StatefulWidget {
   @override
   _HomeScreenTopPartState createState() => _HomeScreenTopPartState();
@@ -143,14 +145,12 @@ class _HomeScreenTopPartState extends State<HomeScreenTopPart> {
                     elevation: 5.0,
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     child: TextField(
-                      controller: TextEditingController(
-                        text: locations[1],
-                      ),
+                      controller: _searchFieldController,
                       style: dropDownMenuItemStyle,
                       cursorColor: appTheme.primaryColor,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                            horizontal: 32.0, vertical: 13.0),
+                            horizontal: 32.0, vertical: 14.0),
                         suffixIcon: Material(
                           elevation: 2.0,
                           borderRadius: BorderRadius.all(
@@ -161,8 +161,11 @@ class _HomeScreenTopPartState extends State<HomeScreenTopPart> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          FlightListingScreen()));
+                                      builder: (context) => InheritedFlightListing(
+                                        fromLocation: locations[selectedLocationIndex],
+                                        toLocation: _searchFieldController.text,
+                                        child: FlightListingScreen(),
+                                      )));
                             },
                             child: Icon(
                               Icons.search,
